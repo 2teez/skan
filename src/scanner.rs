@@ -33,17 +33,13 @@ impl Scanner {
     /// has_next function doctest
     /// ```
     /// use skan::scanner::Scanner;
-    /// assert_eq!(Scanner::from_str("Got it.").has_next(), true);
+    /// assert!(Scanner::from_str("Got it.").has_next());
     /// ```
     pub fn has_next(&self) -> bool {
         if self.data.len() == 0 {
             return false;
         }
-        return if self.counter <= self.data.len() - 1 {
-            true
-        } else {
-            false
-        };
+        self.counter < self.data.len()
     }
 
     ///
@@ -60,9 +56,33 @@ impl Scanner {
         }
     }
 
-    pub(crate) fn delimiter(&self, separator: &str) -> Vec<String> {}
+    pub(crate) fn delimiter(&self, sep: char) -> Vec<String> {
+        String::from_utf8_lossy(&self.data)
+            .split(sep)
+            .filter(|s| !s.is_empty())
+            .map(|s| s.to_string())
+            .collect()
+    }
 
-    pub fn next(&self) -> String {}
+    ///
+    /// next_word function doctest
+    /// ```
+    /// use skan::scanner::Scanner;
+    /// let mut nw = Scanner::from_str("Hot it.");
+    /// nw.next_word();
+    /// nw.next_word();
+    /// assert_eq!(nw.next_word(), None);
+    ///
+    pub fn next_word(&mut self) -> Option<String> {
+        let adata = self.delimiter(' ');
+        if self.counter < adata.len() {
+            let word = adata[self.counter].clone();
+            self.counter += 1;
+            Some(word)
+        } else {
+            None
+        }
+    }
 }
 
 impl Iterator for Scanner {
