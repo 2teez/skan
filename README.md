@@ -1,4 +1,4 @@
-# `skan`
+# skan
 ---
 # Name
 ---
