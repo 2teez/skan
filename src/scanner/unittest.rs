@@ -16,6 +16,7 @@ fn test_new_associate_function() {
         got,
         Scanner {
             data: vec,
+            wrds: None,
             counter: 0
         }
     );
