@@ -36,7 +36,10 @@ impl Scanner {
     /// assert_eq!(Scanner::from_str("Got it.").has_next(), true)
     /// ```
     pub fn has_next(&self) -> bool {
-        return if self.counter < self.data.len() - 1 {
+        if self.data.len() == 0 {
+            return false;
+        }
+        return if self.counter <= self.data.len() - 1 {
             true
         } else {
             false
