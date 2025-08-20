@@ -51,7 +51,13 @@ impl Iterator for Scanner {
     type Item = u8;
     fn next(&mut self) -> Option<Self::Item> {
         return if self.has_next() {
-            Some(self.data[self.counter])
+            Some(
+                self.data[{
+                    let tmp = self.counter;
+                    self.counter += 1;
+                    tmp
+                }],
+            )
         } else {
             None
         };
