@@ -33,7 +33,7 @@ impl Scanner {
     /// has_next function doctest
     /// ```
     /// use skan::scanner::Scanner;
-    /// assert_eq!(Scanner::from_str("Got it.").has_next(), true)
+    /// assert_eq!(Scanner::from_str("Got it.").has_next(), true);
     /// ```
     pub fn has_next(&self) -> bool {
         if self.data.len() == 0 {
@@ -45,6 +45,24 @@ impl Scanner {
             false
         };
     }
+
+    ///
+    /// next_byte function doctest
+    /// ```
+    /// use skan::scanner::Scanner;
+    /// assert_eq!(Scanner::from_str("Hot it.").next_byte(), Some(72));
+    ///
+    pub fn next_byte(&self) -> Option<u8> {
+        if self.has_next() {
+            Some(self.data[self.counter])
+        } else {
+            None
+        }
+    }
+
+    pub(crate) fn delimiter(&self, separator: &str) -> Vec<String> {}
+
+    pub fn next(&self) -> String {}
 }
 
 impl Iterator for Scanner {
