@@ -3,11 +3,32 @@
 //! skan is a mini scanner like java scanner
 //! use to get input from user from the cli
 
-use std::io::{self, BufRead, BufReader, Cursor, Read, Stdin};
+use std::error::Error;
+use std::fmt::{self, Display};
+use std::io::{BufReader, Cursor, Read};
+use std::result::Result;
+
+#[derive(Debug)]
+pub enum ScannerError<E> {
+    NoMoreData,
+    ParseError(E),
+}
+
+impl<E: std::fmt::Debug + std::fmt::Display> Display for ScannerError<E> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            ScannerError::NoMoreData => write!(f, "no more data"),
+            ScannerError::ParseError(e) => write!(f, "Parse error {}", e),
+        }
+    }
+}
+
+impl<E: std::fmt::Debug + std::fmt::Display> Error for ScannerError<E> {}
 
 #[derive(Debug, PartialEq)]
 pub struct Scanner {
     data: Vec<u8>,
+    wrds: Option<Vec<String>>,
     counter: usize,
 }
 
@@ -19,6 +40,7 @@ impl Scanner {
         Self {
             data: values,
             counter: 0,
+            wrds: None,
         }
     }
 
@@ -26,7 +48,11 @@ impl Scanner {
         let mut data: Vec<u8> = Vec::new();
         let mut cursor = Cursor::new(str.as_bytes());
         cursor.read_to_end(&mut data).expect("Invalid stream");
-        Self { data, counter: 0 }
+        Self {
+            data,
+            counter: 0,
+            wrds: None,
+        }
     }
 
     ///
@@ -74,13 +100,65 @@ impl Scanner {
     /// assert_eq!(nw.next_word(), None);
     ///
     pub fn next_word(&mut self) -> Option<String> {
-        let adata = self.delimiter(' ');
-        if self.counter < adata.len() {
-            let word = adata[self.counter].clone();
+        if self.wrds.is_none() {
+            self.wrds = Some(self.delimiter(' '));
+        }
+        let aword = self.wrds.as_ref().expect("can't use as reference");
+        if self.counter < aword.len() {
+            let word = aword[self.counter].clone();
             self.counter += 1;
             Some(word)
         } else {
             None
+        }
+    }
+
+    ///
+    /// next_line function doctest
+    /// ```
+    /// use skan::scanner::Scanner;
+    /// let mut nw = Scanner::from_str("Hot it.\nGot it.");
+    /// nw.next_line();
+    /// assert_eq!(nw.next_line(), Some("Got it.".to_string()));
+    ///
+    pub fn next_line(&mut self) -> Option<String> {
+        if self.wrds.is_none() {
+            self.wrds = Some(self.delimiter('\n'));
+        }
+        let aword = self.wrds.as_ref().expect("can't use as reference");
+        if self.counter < aword.len() {
+            let word = aword[self.counter].clone();
+            self.counter += 1;
+            Some(word)
+        } else {
+            None
+        }
+    }
+
+    ///
+    /// next_number function doctest
+    /// ```
+    /// use skan::scanner::Scanner;
+    /// let mut nw = Scanner::from_str("from 23 to 45");
+    /// nw.next_word();
+    /// nw.next_word();nw.next_word();
+    /// assert_eq!(nw.next_number::<u32>().unwrap(), 45);
+    ///
+    pub fn next_number<T>(&mut self) -> Result<T, ScannerError<<T as std::str::FromStr>::Err>>
+    where
+        T: std::str::FromStr,
+    {
+        if self.wrds.is_none() {
+            self.wrds = Some(self.delimiter(' '));
+        }
+        let aword = self.wrds.as_ref().expect("can't use as reference");
+
+        if self.counter < aword.len() {
+            let word = aword[self.counter].clone();
+            self.counter += 1;
+            word.parse::<T>().map_err(ScannerError::ParseError)
+        } else {
+            Err(ScannerError::NoMoreData)
         }
     }
 }
