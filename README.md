@@ -1,4 +1,4 @@
-# Skan Crate
+# Skan
 
 `skan` is a small Rust crate that provides functionality similar to Java's `Scanner` class. It allows reading input from various sources (strings, files, etc.) and parsing them into different types, such as words, lines, integers, and floats.
 
@@ -11,6 +11,52 @@
 - Parse numbers (integers, floats, doubles) with error handling.
 - Iterator support for byte-wise reading.
 - Custom errors for parsing and end-of-data scenarios.
+
+---
+
+## Installation
+
+You can install `skan` either from Crates.io or directly from the Git repository.
+
+### Installing from Crates.io
+
+1. Open your `Cargo.toml` file.
+2. Add `skan` to your dependencies:
+
+```toml
+[dependencies]
+skan = "0.1.0"
+```
+
+3. In your Rust code, import the scanner:
+
+```rust
+use skan::scanner::Scanner;
+```
+
+4. Create a `Scanner` instance to read input:
+
+```rust
+let mut sc = Scanner::from_str("Hello world");
+let word = sc.next_word();
+```
+### Installing directly from Git
+
+1. Open your `Cargo.toml` file.
+2. Add `skan` as a dependency using the Git repository URL:
+
+```toml
+[dependencies]
+skan = { git = "https://github.com/2teez/skan" }
+```
+
+3. Import and use the crate as usual:
+
+```rust
+use skan::scanner::Scanner;
+let mut sc = Scanner::from_str("Hello world");
+let word = sc.next_word();
+```
 
 ---
 
@@ -41,7 +87,7 @@ Holds the scanner state:
 
 ## Creating a Scanner
 
-### From a reader:
+#### From a reader:
 
 ```rust
 use skan::scanner::Scanner;
@@ -51,7 +97,7 @@ let file = File::open("input.txt").unwrap();
 let mut scanner = Scanner::new(file);
 ```
 
-### From a string:
+#### From a string:
 
 ```rust
 let mut scanner = Scanner::from_str("Hello World");
@@ -61,7 +107,7 @@ let mut scanner = Scanner::from_str("Hello World");
 
 ## Methods
 
-### `has_next() -> bool`
+#### `has_next() -> bool`
 
 Checks if there is more data to read.
 
@@ -72,7 +118,7 @@ assert!(scanner.has_next());
 
 ---
 
-### `next_byte() -> Option<u8>`
+#### `next_byte() -> Option<u8>`
 
 Returns the next byte from the input without advancing the counter if there is data.
 
@@ -83,7 +129,7 @@ assert_eq!(scanner.next_byte(), Some(72)); // 'H'
 
 ---
 
-### `next_word() -> Option<String>`
+#### `next_word() -> Option<String>`
 
 Returns the next word (split by space) from the input.
 
@@ -96,7 +142,7 @@ assert_eq!(scanner.next_word(), None);
 
 ---
 
-### `next_line() -> Option<String>`
+#### `next_line() -> Option<String>`
 
 Returns the next line (split by `\n`) from the input.
 
@@ -108,7 +154,7 @@ assert_eq!(scanner.next_line(), Some("Got it.".to_string()));
 
 ---
 
-### `next_number<T>() -> Result<T, ScannerError<T::Err>>`
+#### `next_number<T>() -> Result<T, ScannerError<T::Err>>`
 
 Parses the next word as a number of type `T`.
 
@@ -122,7 +168,7 @@ assert_eq!(scanner.next_number::<u32>().unwrap(), 45);
 
 ---
 
-### `next_int<T>() -> Result<T, ScannerError<T::Err>>`
+#### `next_int<T>() -> Result<T, ScannerError<T::Err>>`
 
 Parses the next word as an integer. Requires `T` to implement the `Int` trait.
 
@@ -137,7 +183,7 @@ assert_eq!(scanner.next_int::<i32>().unwrap(), 100);
 
 ---
 
-### `next_float<T>() -> Result<T, ScannerError<T::Err>>`
+#### `next_float<T>() -> Result<T, ScannerError<T::Err>>`
 
 Parses the next word as a floating-point number. Requires `T` to implement the `Float` trait.
 
@@ -150,7 +196,7 @@ assert_eq!(scanner.next_float::<f32>().unwrap(), 3.194);
 
 ---
 
-### `next_double() -> Result<f64, ScannerError<f64::Err>>`
+#### `next_double() -> Result<f64, ScannerError<f64::Err>>`
 
 Parses the next word as an `f64` floating-point number.
 
@@ -161,7 +207,7 @@ assert_eq!(scanner.next_double().unwrap(), 6.9669987654230);
 
 ---
 
-### `Iterator` Implementation
+#### `Iterator` Implementation
 
 `Scanner` implements `Iterator<Item = u8>` to read input byte-by-byte.
 
@@ -174,7 +220,7 @@ for byte in &mut scanner {
 
 ---
 
-## Internal Helper Methods
+### Internal Helper Methods
 
 - `delimiter(&self, sep: char) -> Vec<String>` – splits the input by the given separator (`' '` or `'\n'`) and returns non-empty strings.
 
