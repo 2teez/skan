@@ -26,7 +26,7 @@ impl<E: std::fmt::Debug + std::fmt::Display> Display for ScannerError<E> {
 
 impl<E: std::fmt::Debug + std::fmt::Display> Error for ScannerError<E> {}
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Scanner {
     data: Vec<u8>,
     wrds: Option<Vec<String>>,
