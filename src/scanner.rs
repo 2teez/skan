@@ -3,22 +3,11 @@
 //! skan is a mini scanner like java scanner
 //! use to get input from user from the cli
 
+use crate::numbers::Int;
 use std::error::Error;
 use std::fmt::{self, Display};
 use std::io::{BufReader, Cursor, Read};
 use std::result::Result;
-
-pub trait Int {}
-
-impl Int for i8 {}
-impl Int for i16 {}
-impl Int for i32 {}
-impl Int for i64 {}
-
-impl Int for u8 {}
-impl Int for u16 {}
-impl Int for u32 {}
-impl Int for u64 {}
 
 #[derive(Debug)]
 pub enum ScannerError<E> {
@@ -180,7 +169,7 @@ impl Scanner {
     /// next_int function doctest
     /// ```
     /// use skan::scanner::Scanner;
-    /// use skan::scanner::Int;
+    /// use skan::numbers::Int;
     /// let mut nw = Scanner::from_str("from 47 until 100");
     /// nw.next_word();
     /// nw.next_word();nw.next_word();
@@ -188,7 +177,7 @@ impl Scanner {
     ///
     pub fn next_int<T>(&mut self) -> Result<T, ScannerError<<T as std::str::FromStr>::Err>>
     where
-        T: std::str::FromStr + Int,
+        T: Int,
     {
         self.next_number::<T>()
     }
