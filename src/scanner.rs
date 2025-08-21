@@ -8,6 +8,18 @@ use std::fmt::{self, Display};
 use std::io::{BufReader, Cursor, Read};
 use std::result::Result;
 
+pub trait Int {}
+
+impl Int for i8 {}
+impl Int for i16 {}
+impl Int for i32 {}
+impl Int for i64 {}
+
+impl Int for u8 {}
+impl Int for u16 {}
+impl Int for u32 {}
+impl Int for u64 {}
+
 #[derive(Debug)]
 pub enum ScannerError<E> {
     NoMoreData,
@@ -162,6 +174,23 @@ impl Scanner {
         } else {
             Err(ScannerError::NoMoreData)
         }
+    }
+
+    ///
+    /// next_int function doctest
+    /// ```
+    /// use skan::scanner::Scanner;
+    /// use skan::scanner::Int;
+    /// let mut nw = Scanner::from_str("from 47 until 100");
+    /// nw.next_word();
+    /// nw.next_word();nw.next_word();
+    /// assert_eq!(nw.next_int::<i32>().unwrap(), 100);
+    ///
+    pub fn next_int<T>(&mut self) -> Result<T, ScannerError<<T as std::str::FromStr>::Err>>
+    where
+        T: std::str::FromStr + Int,
+    {
+        self.next_number::<T>()
     }
 }
 
