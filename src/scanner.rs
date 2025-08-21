@@ -3,7 +3,7 @@
 //! skan is a mini scanner like java scanner
 //! use to get input from user from the cli
 
-use crate::numbers::Int;
+use crate::numbers::{self, Float, Int};
 use std::error::Error;
 use std::fmt::{self, Display};
 use std::io::{BufReader, Cursor, Read};
@@ -180,6 +180,34 @@ impl Scanner {
         T: Int,
     {
         self.next_number::<T>()
+    }
+
+    ///
+    /// next_int function doctest
+    /// ```
+    /// use skan::scanner::Scanner;
+    /// use skan::numbers::Float;
+    /// let mut nw = Scanner::from_str("from 3.194");
+    /// nw.next_word();
+    /// assert_eq!(nw.next_float::<f32>().unwrap(), 3.194);
+    ///
+    pub fn next_float<T>(&mut self) -> Result<T, ScannerError<<T as std::str::FromStr>::Err>>
+    where
+        T: Float,
+    {
+        self.next_number::<T>()
+    }
+
+    ///
+    /// next_int function doctest
+    /// ```
+    /// use skan::scanner::Scanner;
+    /// use skan::numbers::Float;
+    /// let mut nw = Scanner::from_str("6.9669987654230");
+    /// assert_eq!(nw.next_double().unwrap(), 6.9669987654230);
+    ///
+    pub fn next_double(&mut self) -> Result<f64, ScannerError<<f64 as std::str::FromStr>::Err>> {
+        self.next_number::<f64>()
     }
 }
 
