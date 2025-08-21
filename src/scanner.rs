@@ -157,9 +157,7 @@ impl Scanner {
         if self.counter < aword.len() {
             let word = aword[self.counter].clone();
             self.counter += 1;
-            word.trim_ascii()
-                .parse::<T>()
-                .map_err(ScannerError::ParseError)
+            word.trim().parse::<T>().map_err(ScannerError::ParseError)
         } else {
             Err(ScannerError::NoMoreData)
         }
