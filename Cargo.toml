@@ -15,11 +15,11 @@ keywords = [
     "text-processing",
 ]
 categories = [
-    "data-processing",
+    "Text Processing",
     "encoding",
     "command-line-utilities",
     "parser-implementations",
-    "Input Handling",
+    "CLI Tools",
 ]
 exclude = ["/target", "Cargo.toml.orig"]
 
